@@ -4,11 +4,25 @@ import pandas as pd
 import pydeck as pdk
 
 
-st.title("GEOHIDRO: Plataforma de Diagnóstico y Visualización del Estado de Recursos Hídricos de Santander")
+st.set_page_config(
+    page_title="GEOHIDRO: Plataforma de Diagnóstico y Visualización del Estado de Recursos Hídricos de Santander",
+    page_icon="🌧️",
+    layout="centered",
+    initial_sidebar_state="auto",
+)
+
+st.sidebar.title("Panel de navegación")
+
+
+st.title(
+    "GEOHIDRO: Plataforma de Diagnóstico y Visualización del Estado de Recursos Hídricos de Santander"
+)
 
 st.divider()
 
-st.markdown("GEOHIDRO es una plataforma de diagnóstico y visualización del estado de los recursos hídricos en Santander. Permite a los usuarios visualizar datos espacio-temporales sobre las precipitaciones, la temperatura y la vulnerabilidad de los recursos hídricos en el departamento de Santander. GEOHIDRO utiliza modelos de inteligencia artificial para interpolar de manera espacio-temporal la información de las estaciones meteorológicas.")
+st.markdown(
+    "GEOHIDRO es una plataforma de diagnóstico y visualización del estado de los recursos hídricos en Santander. Permite a los usuarios visualizar datos espacio-temporales sobre las precipitaciones, la temperatura y la vulnerabilidad de los recursos hídricos en el departamento de Santander. GEOHIDRO utiliza modelos de inteligencia artificial para interpolar de manera espacio-temporal la información de las estaciones meteorológicas."
+)
 
 chart_data = pd.DataFrame(
     np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
