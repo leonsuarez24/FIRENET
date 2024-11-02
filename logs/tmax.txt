@@ -1,7 +1,5 @@
 Loading data from data/tmax.xlsx
 Original dataset size: (5841, 21)
-Max value: 38.5873563218391
-Min value: 11.7025
 Number of NaN values: 0
 Deleting NaN values ...
 New dataset size: (5841, 6)

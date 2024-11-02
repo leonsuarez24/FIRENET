@@ -1,10 +1,38 @@
 Starting temperature data filtering
 New dataset size with filtering tmax < tmin: (5841, 6)
-Number of unique stations in tmax: 30
-Number of unique stations in tmin: 30
-Number of common stations: 30
-New dataset size after filtering common stations: tmax->(5841, 6), tmin->(5928, 6)
-Number of unique dates in tmax: 298
-Number of unique dates in tmin: 298
-Number of common dates: 298
-New dataset size after filtering common dates: tmax->(5841, 6), tmin->(5928, 6)
+Merged dataset size: (5203, 7)
+Computed Valor_medio for each matching row
+Result dataset size: (5203, 8)
+
+Descriptive statistics valor min:
+count    5203.000000
+mean       17.063363
+std         4.920020
+min        -2.238506
+25%        13.941052
+50%        17.940323
+75%        20.345941
+max        25.479570
+Name: Valor_min, dtype: float64
+
+Descriptive statistics valor medio:
+count    5203.000000
+mean       22.362811
+std         5.061800
+min         6.500776
+25%        18.943819
+50%        22.995853
+75%        26.620594
+max        31.003021
+Name: Valor_medio, dtype: float64
+
+Descriptive statistics valor max:
+count    5203.000000
+mean       27.662259
+std         5.426312
+min        11.702500
+25%        23.999846
+50%        28.362333
+75%        32.253961
+max        38.587356
+Name: Valor_max, dtype: float64
