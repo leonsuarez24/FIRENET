@@ -1,0 +1,17 @@
+Loading data from data/tmax.xlsx
+Original dataset size: (5841, 21)
+Max value: 38.5873563218391
+Min value: 11.7025
+Number of NaN values: 0
+Deleting NaN values ...
+New dataset size: (5841, 6)
+Descriptive statistics:
+count    5841.000000
+mean       27.791361
+std         5.295462
+min        11.702500
+25%        24.248925
+50%        28.375269
+75%        32.319892
+max        38.587356
+Name: Valor, dtype: float64
