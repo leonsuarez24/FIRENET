@@ -7,19 +7,16 @@ import matplotlib.pyplot as plt
 tmax = pd.read_excel("data/tmax.xlsx")
 tmin = pd.read_excel("data/tmin.xlsx")
 
-print("tamaño del dataset de tmax: ", tmax.shape)
-print("tamaño del dataset de tmin: ", tmin.shape)
+print("tmax dataset size: ", tmax.shape)
+print("tmin dataset size: ", tmin.shape)
 
-# filtrar columnas de interés
-columnas = ["CodigoEstacion", "Latitud", "Longitud", "Altitud", "Fecha", "Valor"]
-tmax = tmax[columnas]
+columns = ["CodigoEstacion", "Latitud", "Longitud", "Altitud", "Fecha", "Valor"]
+tmax = tmax[columns]
 
-# explorar dataset
-print("valor mínimo: ", tmax["Valor"].min())
-print("valor máximo: ", tmax["Valor"].max())
-print("cantidad de valores nulos: ", tmax["Valor"].isna().sum())
+print("Tmax min value: ", tmax["Valor"].min())
+print("Tmax max value: ", tmax["Valor"].max())
+print("Number of NaN values: ", tmax["Valor"].isna().sum())
 
-# eliminar valores nulos
 print("eliminando valores nulos ...")
 tmax = tmax.dropna(subset=["Valor"])
 print("nuevo tamaño de los datos: ", tmax.shape)
@@ -30,20 +27,25 @@ print("valor mínimo del dataset de tmin: ", tmin_min)
 tmax = tmax.drop(tmax[tmax["Valor"] < tmin_min].index)
 print("nuevo tamaño de los datos con filtro: ", tmax.shape)
 
-
 # plotear histograma
-print("creando histograma")
-plt.hist(tmax["Valor"], color="blue")
-plt.title("Histograma temperatura máxima")
-plt.xlabel("Temperatura °C")
-# plt.show()
+fig, ax = plt.subplots(1, 2, figsize=(20, 6))
+ax[0].hist(tmax["Valor"], color="blue")
+ax[0].set_title("Histograma temperatura máxima")
+ax[0].set_xlabel("Temperatura °C")
+ax[1].hist(tmin["Valor"], color="red")
+ax[1].set_title("Histograma temperatura mínima")
+ax[1].set_xlabel("Temperatura °C")
+plt.show()
 
 # plotear boxplot
-print("creando boxplot")
-fig, ax = plt.subplots()
-ax.set_ylabel("Temperatura °C")
-bplot = ax.boxplot(tmax["Valor"], patch_artist=True)  # fill with color
-# plt.show()
+fig, ax = plt.subplots(1, 2, figsize=(20, 6))
+ax[0].set_title("Boxplot temperatura máxima")
+ax[0].set_ylabel("Temperatura °C")
+bplot = ax[0].boxplot(tmax["Valor"], patch_artist=True)  # fill with color
+ax[1].set_title("Boxplot temperatura mínima")
+ax[1].set_ylabel("Temperatura °C")
+bplot = ax[1].boxplot(tmin["Valor"], patch_artist=True)  # fill with color
+plt.show()
 
 # estadística descriptiva
 print("cargando estadística descriptiva...")
