@@ -2,9 +2,31 @@ import folium
 from streamlit_folium import st_folium
 from scripts.process_temp import process_temp_data
 import folium
-
+import streamlit as st
+from datetime import datetime
+import pandas as pd
 
 def display_map():
+
+    df = process_temp_data()
+
+    min_date = df['Fecha'].min()
+    max_date = df['Fecha'].max()
+
+    start_time = st.slider(
+        "Seleccionar fecha",
+        min_value=min_date.to_pydatetime(),
+        max_value=max_date.to_pydatetime(),
+        value=datetime(2020, 1, 1),
+        format="YYYY-MM",
+    )
+
+    st.write(f"Fecha seleccionada: {start_time.strftime('%Y-%m')}")
+
+    selected_period = start_time.strftime('%Y-%m')
+    df['YearMonth'] = df['Fecha'].dt.to_period('M').astype(str)
+    df = df[df['YearMonth'] == selected_period]
+
     map = folium.Map(location=[7, -73.6536], zoom_start=8, tiles="CartoDB positron")
     folium.GeoJson(
         "data/santander.geojson",
@@ -13,12 +35,11 @@ def display_map():
         },
     ).add_to(map)
 
-    df = process_temp_data()
-
+    
     for _, row in df.iterrows():
         folium.CircleMarker(
             location=(row['Latitud'], row['Longitud']),
-            radius=5,  # Adjust size based on `Valor_medio`, if desired
+            radius=5,
             color='blue',
             fill=True,
             fill_color='blue',
