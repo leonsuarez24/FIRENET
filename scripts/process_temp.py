@@ -94,8 +94,10 @@ def compute_mean_temperature(tmax: pd.DataFrame, tmin: pd.DataFrame) -> pd.DataF
     return result
 
 
-tmax_data = processing_temp_data("data/tmax.xlsx", columns)
-tmin_data = processing_temp_data("data/tmin.xlsx", columns)
+def process_temp_data():
+    tmax_data = processing_temp_data("data/tmax.xlsx", columns)
+    tmin_data = processing_temp_data("data/tmin.xlsx", columns)
 
-filtered_tmax, filtered_tmin = filter_temp_data(tmax_data, tmin_data)
-mean_temperature = compute_mean_temperature(filtered_tmax, filtered_tmin)
+    filtered_tmax, filtered_tmin = filter_temp_data(tmax_data, tmin_data)
+    mean_temperature = compute_mean_temperature(filtered_tmax, filtered_tmin)
+    return mean_temperature
