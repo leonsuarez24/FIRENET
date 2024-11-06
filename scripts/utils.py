@@ -6,6 +6,8 @@ import streamlit as st
 from datetime import datetime
 import pandas as pd
 
+
+
 def display_map():
 
     df = process_temp_data()
