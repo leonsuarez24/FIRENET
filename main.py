@@ -4,7 +4,7 @@ import pandas as pd
 import pydeck as pdk
 
 
-APP_TITLE = "GEOHIDRO: Plataforma de Diagnóstico y Visualización del Estado de Recursos Hídricos de Santander"
+APP_TITLE = "FireNet:Plataforma Integrada para la Gestión de Incendios Forestales Utilizando Tecnologías Geoespaciales e Inteligencia Artificial"
 
 
 def main():
@@ -19,9 +19,7 @@ def main():
     st.title(APP_TITLE)
     st.divider()
 
-    st.markdown(
-        "GEOHIDRO es una plataforma de diagnóstico y visualización del estado de los recursos hídricos en Santander. Permite a los usuarios visualizar datos espacio-temporales sobre las precipitaciones, la temperatura y la vulnerabilidad de los recursos hídricos en el departamento de Santander. GEOHIDRO utiliza modelos de inteligencia artificial para interpolar de manera espacio-temporal la información de las estaciones meteorológicas."
-    )
+    st.markdown("FireNet es una plataforma de diagnóstico y visualización de...")
 
 
 if __name__ == "__main__":

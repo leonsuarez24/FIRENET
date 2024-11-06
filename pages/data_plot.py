@@ -1,8 +1,9 @@
 import streamlit as st
 from scripts.utils import display_map
 import pandas as pd
+from pykrige.ok import OrdinaryKriging
 
-APP_TITLE = "GEOHIDRO: Plataforma de Diagnóstico y Visualización del Estado de Recursos Hídricos de Santander"
+APP_TITLE = "FireNet:Plataforma Integrada para la Gestión de Incendios Forestales Utilizando Tecnologías Geoespaciales e Inteligencia Artificial"
 
 
 def main():

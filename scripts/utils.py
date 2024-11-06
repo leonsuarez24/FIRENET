@@ -7,10 +7,13 @@ from datetime import datetime
 import pandas as pd
 
 
+def krigin_interpolation(data: pd.DataFrame):
+    df = pd.read_excel("data/tmean.xlsx")
+
 
 def display_map():
 
-    df = process_temp_data()
+    df = pd.read_excel("data/tmean.xlsx")
 
     min_date = df['Fecha'].min()
     max_date = df['Fecha'].max()
