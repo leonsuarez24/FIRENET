@@ -8,6 +8,8 @@ import pandas as pd
 import geopandas as gpd
 import numpy as np
 from folium.raster_layers import ImageOverlay
+import matplotlib.colors as mcolors
+import matplotlib.pyplot as plt
 
 
 def get_santander_boundaries():
@@ -71,19 +73,26 @@ def display_map():
     boundaries = gpd.read_file("data/aoi/aoi_boundary.json")
     minx, miny, maxx, maxy = boundaries.total_bounds
 
+    image_data = np.load(f"data/tmean_interp/npy/{selected_period}-01.npy")
+    norm = mcolors.Normalize(vmin=image_data.min(), vmax=image_data.max())
+    colormap = plt.cm.coolwarm
+    rgba_img = colormap(norm(image_data))
+
     img = ImageOverlay(
-        image=np.load(f"data/tmean_interp/npy/{selected_period}-01.npy"),
+        image=rgba_img,
         bounds=[[miny, minx], [maxy, maxx]],
-        colormap=lambda x: (1, 0, 0, x),
+        colormap=lambda x: colormap,
+        origin="lower",
+        opacity=0.5,
     ).add_to(map)
 
     for _, row in df.iterrows():
         folium.CircleMarker(
             location=(row["Latitud"], row["Longitud"]),
-            radius=5,
-            color="blue",
+            radius=1,
+            color="black",
             fill=True,
-            fill_color="blue",
+            fill_color="black",
             fill_opacity=0.6,
             popup=f"Fecha: {row['Fecha'].strftime('%Y-%m-%d')}\nTemperatura media: {np.round(row['Valor_medio'], 2)} °C",
         ).add_to(map)
