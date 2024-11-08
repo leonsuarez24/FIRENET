@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 import geopandas as gpd
 import numpy as np
+from folium.raster_layers import ImageOverlay
 
 
 def get_santander_boundaries():
@@ -20,6 +21,15 @@ def get_santander_boundaries():
     with open("data/santander_boundary.json", "w") as f:
         f.write(boundary_geo_json)
 
+    shapefile_2 = "data/aoi/aoi.shp"
+    df_2 = gpd.read_file(shapefile_2)
+    df_2 = df_2.to_crs("EPSG:4326")
+    boundary_2 = df_2.boundary
+    boundary_geo_json_2 = boundary_2.to_json()
+
+    with open("data/aoi/aoi_boundary.json", "w") as f:
+        f.write(boundary_geo_json_2)
+
 
 def display_map():
 
@@ -32,7 +42,7 @@ def display_map():
         "Seleccionar fecha",
         min_value=min_date.to_pydatetime(),
         max_value=max_date.to_pydatetime(),
-        value=datetime(2020, 1, 1),
+        value=datetime(2000, 1, 1),
         format="YYYY-MM",
     )
 
@@ -43,11 +53,28 @@ def display_map():
     df = df[df["YearMonth"] == selected_period]
 
     map = folium.Map(location=[7, -73.6536], zoom_start=8, tiles="CartoDB positron")
+
     folium.GeoJson(
         "data/santander_boundary.json",
         style_function=lambda feature: {
             "weight": 2,
         },
+    ).add_to(map)
+
+    folium.GeoJson(
+        "data/aoi/aoi_boundary.json",
+        style_function=lambda feature: {
+            "weight": 2,
+        },
+    ).add_to(map)
+
+    boundaries = gpd.read_file("data/aoi/aoi_boundary.json")
+    minx, miny, maxx, maxy = boundaries.total_bounds
+
+    img = ImageOverlay(
+        image=np.load(f"data/tmean_interp/npy/{selected_period}-01.npy"),
+        bounds=[[miny, minx], [maxy, maxx]],
+        colormap=lambda x: (1, 0, 0, x),
     ).add_to(map)
 
     for _, row in df.iterrows():
