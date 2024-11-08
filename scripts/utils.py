@@ -60,6 +60,7 @@ def display_map():
         "data/santander_boundary.json",
         style_function=lambda feature: {
             "weight": 2,
+            "color": "black"
         },
     ).add_to(map)
 
@@ -67,6 +68,7 @@ def display_map():
         "data/aoi/aoi_boundary.json",
         style_function=lambda feature: {
             "weight": 2,
+            "color": "black"
         },
     ).add_to(map)
 
