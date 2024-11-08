@@ -1,4 +1,5 @@
 import folium
+import folium.raster_layers
 from streamlit_folium import st_folium
 from scripts.process_temp import process_temp_data
 import folium
@@ -10,6 +11,8 @@ import numpy as np
 from folium.raster_layers import ImageOverlay
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
+from PIL import Image
+from io import BytesIO
 
 
 def get_santander_boundaries():
@@ -58,18 +61,12 @@ def display_map():
 
     folium.GeoJson(
         "data/santander_boundary.json",
-        style_function=lambda feature: {
-            "weight": 2,
-            "color": "black"
-        },
+        style_function=lambda feature: {"weight": 2, "color": "black"},
     ).add_to(map)
 
     folium.GeoJson(
         "data/aoi/aoi_boundary.json",
-        style_function=lambda feature: {
-            "weight": 2,
-            "color": "black"
-        },
+        style_function=lambda feature: {"weight": 2, "color": "black"},
     ).add_to(map)
 
     boundaries = gpd.read_file("data/aoi/aoi_boundary.json")
@@ -99,4 +96,22 @@ def display_map():
             popup=f"Fecha: {row['Fecha'].strftime('%Y-%m-%d')}\nTemperatura media: {np.round(row['Valor_medio'], 2)} °C",
         ).add_to(map)
 
-    st_map = st_folium(map, width=700, height=400)
+    fig, ax = plt.subplots(figsize=(0.8, 5))
+    fig.subplots_adjust(left=0.2, right=0.8, top=0.9, bottom=0.1)
+
+    cbar = plt.colorbar(
+        plt.cm.ScalarMappable(norm=norm, cmap=colormap), cax=ax, aspect=20, shrink=0.5
+    )
+    cbar.set_label("Temperatura (°C)")
+
+    buf = BytesIO()
+    plt.savefig(buf, format="png", transparent=True, bbox_inches="tight")
+    buf.seek(0)
+
+    col1, col2 = st.columns([5, 1])
+
+    with col1:
+        st_map = st_folium(map, width=700, height=400)
+
+    with col2:
+        st.image(buf, use_column_width=True)
