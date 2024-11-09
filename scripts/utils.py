@@ -72,7 +72,7 @@ def display_map():
     boundaries = gpd.read_file("data/aoi/aoi_boundary.json")
     minx, miny, maxx, maxy = boundaries.total_bounds
 
-    image_data = np.load(f"data/tmean_interp/npy/{selected_period}-01.npy")
+    image_data = np.load(f"data/tmean_interp_final/npy/temperatura_{selected_period}-01.npy")
     norm = mcolors.Normalize(vmin=image_data.min(), vmax=image_data.max())
     colormap = plt.cm.coolwarm
     rgba_img = colormap(norm(image_data))
