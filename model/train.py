@@ -22,7 +22,7 @@ import wandb
 
 def main(args):
     set_seed(args.seed)
-    PATH_NAME = f"lr_{args.lr}_b_{args.batch_size}_e{args.epochs}_sd_{args.seed}_hd_{args.hidden_dim}_ks_{args.kernel_size}_nl_{args.num_layers}"
+    PATH_NAME = f"lr_{args.lr}_b_{args.batch_size}_e{args.epochs}_sd_{args.seed}"
     args.save_path = args.save_path + PATH_NAME
     if os.path.exists(f"{args.save_path}/metrics/metrics.npy"):
         raise FileExistsError("Model already trained")
@@ -86,8 +86,8 @@ def main(args):
             optimizer.step()
 
             train_loss.update(loss.item())
-            train_ssim.update(SSIM(outputs[-1].squeeze(2), target.squeeze(2)).item())
-            train_psnr.update(PSNR(outputs[-1].squeeze(2), target.squeeze(2)).item())
+            train_ssim.update(SSIM(outputs.squeeze(2), target.squeeze(2)).item())
+            train_psnr.update(PSNR(outputs.squeeze(2), target.squeeze(2)).item())
 
             data_loop_train.set_description(f"Epoch: {epoch + 1}/{args.epochs}")
             data_loop_train.set_postfix(
@@ -109,12 +109,12 @@ def main(args):
                 input_tensor = input_tensor.to(device)
                 target = target.to(device)
 
-                outputs, _ = model(input_tensor)
-                loss = criterion(outputs[-1], target)
+                outputs = model(input_tensor)
+                loss = criterion(outputs, target)
 
                 val_loss.update(loss.item())
-                val_ssim.update(SSIM(outputs[-1].squeeze(2), target.squeeze(2)).item())
-                val_psnr.update(PSNR(outputs[-1].squeeze(2), target.squeeze(2)).item())
+                val_ssim.update(SSIM(outputs.squeeze(2), target.squeeze(2)).item())
+                val_psnr.update(PSNR(outputs.squeeze(2), target.squeeze(2)).item())
 
                 data_loop_val.set_description(f"Epoch: {epoch + 1}/{args.epochs}")
                 data_loop_val.set_postfix(loss=val_loss.avg, ssim=val_ssim.avg, pnsr=val_psnr.avg)
@@ -126,6 +126,7 @@ def main(args):
         if val_psnr.avg > current_pnsr:
             current_pnsr = val_psnr.avg
             torch.save(model.state_dict(), f"{model_path}/model.pth")
+            print(f"saving model with pnsr: {current_pnsr}")
 
         wandb.log(
             {
@@ -165,12 +166,12 @@ def main(args):
             input_tensor = input_tensor.to(device)
             target = target.to(device)
 
-            outputs, _ = model(input_tensor)
-            loss = criterion(outputs[-1], target)
+            outputs = model(input_tensor)
+            loss = criterion(outputs, target)
 
             test_loss.update(loss.item())
-            test_ssim.update(SSIM(outputs[-1].squeeze(2), target.squeeze(2)).item())
-            test_psnr.update(PSNR(outputs[-1].squeeze(2), target.squeeze(2)).item())
+            test_ssim.update(SSIM(outputs.squeeze(2), target.squeeze(2)).item())
+            test_psnr.update(PSNR(outputs.squeeze(2), target.squeeze(2)).item())
 
             data_loop_test.set_description(f"Epoch: {epoch + 1}/{args.epochs}")
             data_loop_test.set_postfix(loss=test_loss.avg, ssim=test_ssim.avg, pnsr=test_psnr.avg)
@@ -204,21 +205,16 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="FireNet")
-    parser.add_argument("--batch_size", type=int, default=16, help="batch size")
+    parser.add_argument("--batch_size", type=int, default=4, help="batch size")
     parser.add_argument("--epochs", type=int, default=100, help="number of epochs")
-    parser.add_argument("--lr", type=float, default=1e-1, help="learning rate")
+    parser.add_argument("--lr", type=float, default=5e-4, help="learning rate")
     parser.add_argument("--seed", type=int, default=1, help="seed")
-    parser.add_argument("--hidden_dim", type=list, default=[16, 32, 32, 1], help="hidden dimension")
-    parser.add_argument(
-        "--kernel_size", type=list, default=[(3, 3), (3, 3), (3, 3), (3, 3)], help="kernel size"
-    )
-    parser.add_argument("--num_layers", type=int, default=4, help="number of layers")
     parser.add_argument(
         "--save_path", type=str, default="model/weights/", help="path to save model"
     )
     parser.add_argument("--project_name", type=str, default="FireNet", help="project name")
-    parser.add_argument("--input_seq_len", type=int, default=6, help="input sequence length")
-    parser.add_argument("--output_seq_len", type=int, default=6, help="output sequence")
+    parser.add_argument("--input_seq_len", type=int, default=10, help="input sequence length")
+    parser.add_argument("--output_seq_len", type=int, default=10, help="output sequence")
 
     args = parser.parse_args()
     main(args)
