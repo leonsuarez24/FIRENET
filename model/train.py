@@ -3,13 +3,7 @@ from params import (
     convlstm_encoder_params,
     convlstm_decoder_params,
 )
-from utils import (
-    AverageMeter,
-    TempDataset,
-    save_metrics,
-    set_seed,
-    save_npy_metric,
-)
+from utils import AverageMeter, TempDataset, save_metrics, set_seed, save_npy_metric, save_imgs
 import argparse
 import os
 from tqdm import tqdm
@@ -27,7 +21,7 @@ def main(args):
     if os.path.exists(f"{args.save_path}/metrics/metrics.npy"):
         raise FileExistsError("Model already trained")
 
-    _, model_path, metrics_path = save_metrics(args.save_path)
+    images_path, model_path, metrics_path = save_metrics(args.save_path)
     current_pnsr = 0
 
     logging.basicConfig(
@@ -127,6 +121,17 @@ def main(args):
             current_pnsr = val_psnr.avg
             torch.save(model.state_dict(), f"{model_path}/model.pth")
             print(f"saving model with pnsr: {current_pnsr}")
+
+        grid, psnr_imgs, ssim_imgs = save_imgs(
+            imgs=target[0, :, :, :, :],
+            recons=outputs[0, :, :, :, :],
+            num_img=args.input_seq_len,
+            pad=2,
+            path=images_path,
+            name=f"epoch_{epoch}",
+            PSNR=PSNR,
+            SSIM=SSIM,
+        )
 
         wandb.log(
             {

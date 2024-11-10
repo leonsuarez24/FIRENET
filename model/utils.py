@@ -6,10 +6,23 @@ import torch
 import random
 from torchvision import transforms
 from collections import OrderedDict
-import torch.nn as nn
+import torchvision.utils as vutils
 
 
+def save_imgs(imgs, recons, num_img, pad, path, name, PSNR, SSIM):
+    grid = vutils.make_grid(
+        torch.cat([imgs[:num_img], recons[:num_img]]), nrow=num_img, padding=pad, normalize=True
+    )
+    vutils.save_image(grid, f"{path}/{name}.png")
 
+    psnr_imgs = [
+        np.round(PSNR(recons[i].unsqueeze(0), imgs[i].unsqueeze(0)).item(), 2) for i in range(num_img)
+    ]
+    ssim_imgs = [
+        np.round(SSIM(recons[i].unsqueeze(0), imgs[i].unsqueeze(0)).item(), 3) for i in range(num_img)
+    ]
+
+    return grid, psnr_imgs, ssim_imgs
 
 
 def set_seed(seed: int):
