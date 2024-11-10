@@ -4,6 +4,7 @@ import os
 from torch.utils.data import Dataset, DataLoader
 import torch
 import random
+from torchvision import transforms
 
 
 def set_seed(seed: int):
@@ -19,12 +20,13 @@ def set_seed(seed: int):
 
 
 class TempConvLSTMDataset(Dataset):
-    def __init__(self, folder_path, input_seq_len=10, output_seq_len=10):
+    def __init__(self, folder_path, input_seq_len=10, output_seq_len=10, transform=None):
 
         self.folder_path = folder_path
         self.input_seq_len = input_seq_len
         self.output_seq_len = output_seq_len
         self.total_len = input_seq_len + output_seq_len
+        self.transform = transform
 
         self.data = self.load_data()
 
@@ -39,7 +41,7 @@ class TempConvLSTMDataset(Dataset):
             ]
         )
         data_list = [np.load(file) for file in file_paths]
-        data = torch.tensor(np.stack(data_list), dtype=torch.float32)
+        data = np.stack(data_list)
         return data
 
     def __len__(self):
@@ -50,8 +52,15 @@ class TempConvLSTMDataset(Dataset):
         input_end = input_start + self.input_seq_len
         output_start = input_end
         output_end = output_start + self.output_seq_len
-        input_seq = self.data[input_start:input_end].unsqueeze(1)
-        output_seq = self.data[output_start:output_end].unsqueeze(1)
+        input_seq = self.data[input_start:input_end]
+        output_seq = self.data[output_start:output_end]
+        
+        input_seq = torch.tensor(input_seq, dtype=torch.float32).unsqueeze(1)
+        output_seq = torch.tensor(output_seq, dtype=torch.float32).unsqueeze(1)
+
+        if self.transform:
+            input_seq = self.transform(input_seq)
+            output_seq = self.transform(output_seq)
 
         return input_seq, output_seq
 
@@ -59,7 +68,7 @@ class TempConvLSTMDataset(Dataset):
 class TempDataset:
     def __init__(
         self,
-        folder_path,
+        folder_path="data/tmean_interp_final/npy",
         batch_size=32,
         input_seq_len=10,
         output_seq_len=10,
@@ -67,6 +76,7 @@ class TempDataset:
         split_val=0.1,
         seed: int = 42,
         workers=0,
+        rezise=(128, 128),
     ):
 
         self.folder_path = folder_path
@@ -77,10 +87,17 @@ class TempDataset:
         self.split_val = split_val
         self.seed = seed
         self.workers = workers
+        self.rezise = rezise
+
+        self.transform = transforms.Compose(
+            [
+                transforms.Resize(self.rezise),
+            ]
+        )
 
     def get_loaders(self):
         train_dataset = TempConvLSTMDataset(
-            self.folder_path, self.input_seq_len, self.output_seq_len
+            self.folder_path, self.input_seq_len, self.output_seq_len, transform=self.transform
         )
         train_loader = DataLoader(
             train_dataset,
