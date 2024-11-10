@@ -36,7 +36,7 @@ def get_santander_boundaries():
         f.write(boundary_geo_json_2)
 
 
-def display_map():
+def display_map_temp_precip():
 
     df = pd.read_excel("data/tmean.xlsx")
 
@@ -64,14 +64,15 @@ def display_map():
         style_function=lambda feature: {"weight": 2, "color": "black"},
     ).add_to(map)
 
-    folium.GeoJson(
-        "data/aoi/aoi_boundary.json",
-        style_function=lambda feature: {"weight": 2, "color": "black"},
-    ).add_to(map)
+    # folium.GeoJson(
+    #     "data/aoi/aoi_boundary.json",
+    #     style_function=lambda feature: {"weight": 2, "color": "black"},
+    # ).add_to(map)
 
     boundaries = gpd.read_file("data/aoi/aoi_boundary.json")
     minx, miny, maxx, maxy = boundaries.total_bounds
-
+    
+    temp_layer = folium.FeatureGroup(name="Temperatura", show=False).add_to(map)
     image_data = np.load(f"data/tmean_interp_final/npy/temperatura_{selected_period}-01.npy")
     norm = mcolors.Normalize(vmin=image_data.min(), vmax=image_data.max())
     colormap = plt.cm.coolwarm
@@ -83,7 +84,8 @@ def display_map():
         colormap=lambda x: colormap,
         origin="lower",
         opacity=0.5,
-    ).add_to(map)
+    ).add_to(temp_layer)
+
 
     for _, row in df.iterrows():
         folium.CircleMarker(
@@ -94,7 +96,7 @@ def display_map():
             fill_color="black",
             fill_opacity=0.6,
             popup=f"Fecha: {row['Fecha'].strftime('%Y-%m-%d')}\nTemperatura media: {np.round(row['Valor_medio'], 2)} °C",
-        ).add_to(map)
+        ).add_to(temp_layer)
 
     fig, ax = plt.subplots(figsize=(0.8, 5))
     fig.subplots_adjust(left=0.2, right=0.8, top=0.9, bottom=0.1)
@@ -115,3 +117,21 @@ def display_map():
 
     with col2:
         st.image(buf, use_column_width=True)
+
+    # ----------- Precipitation layer ----------------
+    precip_layer = folium.FeatureGroup(name="Precipitation", show=False).add_to(map)
+    precip_data = np.load(f"data/precipitacion_interp_final/npy/precipitacion_{selected_period}-01.npy")
+    precip_norm = mcolors.Normalize(vmin=precip_data.min(), vmax=precip_data.max())
+    precip_colormap = plt.cm.Blues
+    precip_rgba_img = precip_colormap(precip_norm(precip_data))
+
+    ImageOverlay(
+        image=precip_rgba_img,
+        bounds=[[miny, minx], [maxy, maxx]],
+        origin="lower",
+        opacity=0.5,
+    ).add_to(precip_layer)
+
+    folium.LayerControl().add_to(map)
+
+    
