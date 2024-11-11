@@ -16,7 +16,7 @@ import wandb
 
 def main(args):
     set_seed(args.seed)
-    PATH_NAME = f"lr_{args.lr}_b_{args.batch_size}_e{args.epochs}_sd_{args.seed}_{args.dataset}_{args.input_seq_len}_{args.output_seq_len}_{args.resize}"
+    PATH_NAME = f"lr_{args.lr}_b_{args.batch_size}_e{args.epochs}_sd_{args.seed}"
     args.save_path = args.save_path + PATH_NAME
     if os.path.exists(f"{args.save_path}/metrics/metrics.npy"):
         raise FileExistsError("Model already trained")
@@ -42,18 +42,11 @@ def main(args):
     SSIM = StructuralSimilarityIndexMeasure().to(device)
     PSNR = PeakSignalNoiseRatio().to(device)
 
-    dataset_path = (
-        "data/tmean_interp_final/npy"
-        if args.dataset == "temp"
-        else "data/precipitation_interp_final/npy"
-    )
-
     dataset = TempDataset(
         batch_size=args.batch_size,
         seed=args.seed,
         input_seq_len=args.input_seq_len,
         output_seq_len=args.output_seq_len,
-        rezise=(args.resize, args.resize),
     )
     train_loader, val_loader, test_loader = dataset.get_loaders()
 
@@ -64,7 +57,7 @@ def main(args):
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     criterion = torch.nn.MSELoss()
 
-    wandb.init(project="GEOHIDRO", config=args, name=PATH_NAME)
+    wandb.init(project=args.project_name, config=args)
 
     for epoch in range(args.epochs):
         model.train()
@@ -218,7 +211,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="FireNet")
     parser.add_argument("--batch_size", type=int, default=4, help="batch size")
-    parser.add_argument("--epochs", type=int, default=300, help="number of epochs")
+    parser.add_argument("--epochs", type=int, default=100, help="number of epochs")
     parser.add_argument("--lr", type=float, default=5e-4, help="learning rate")
     parser.add_argument("--seed", type=int, default=1, help="seed")
     parser.add_argument(
@@ -227,8 +220,6 @@ if __name__ == "__main__":
     parser.add_argument("--project_name", type=str, default="FireNet", help="project name")
     parser.add_argument("--input_seq_len", type=int, default=10, help="input sequence length")
     parser.add_argument("--output_seq_len", type=int, default=10, help="output sequence")
-    parser.add_argument("--dataset", type=str, default="temp", help="dataset name")
-    parser.add_argument("--resize", type=int, default=256, help="resize image")
 
     args = parser.parse_args()
     main(args)
