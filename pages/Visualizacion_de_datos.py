@@ -147,7 +147,7 @@ def main():
         st.markdown("## Visualización de delitos ambientales")
 
         with st.container():
-            col7, col8 = st.columns([1, 1])
+            col7, col8, col9 = st.columns([1, 1, 1])
 
             with col7:
 
@@ -168,6 +168,10 @@ def main():
                 buf = BytesIO()
                 fig_d_p.savefig(buf, format="png")
                 st.image(buf, use_column_width=True)
+
+            with col9:
+                delitos_df = pd.read_csv("data/delitos/delitos_santander_total.csv")
+                st.write(delitos_df)
 
         st.markdown(
             "## Predicción de datos de temperatura y precipitación para los siguientes 10 meses"
