@@ -182,7 +182,7 @@ def main():
 
         with st.container():
 
-            st.slider(
+            prediction_time = st.slider(
                 "Seleccionar fecha para la predicción",
                 min_value=datetime(2024, 11, 1),
                 max_value=datetime(2025, 8, 1),
@@ -196,10 +196,53 @@ def main():
             with col5:
 
                 st.markdown("## Predicción de temperatura")
+                plot_prediction(
+                    prediction_time,
+                    "temperatura",
+                )
 
             with col6:
 
                 st.markdown("## Predicción de precipitación")
+
+                plot_prediction(
+                    prediction_time,
+                    "precipitacion",
+                )
+
+
+def plot_prediction(start_time, data: str):
+    region = ((-74.6), (-72.4), (5.5), (8.2))
+    spacing = 0.01
+    grid = vd.grid_coordinates(region, spacing=spacing)
+
+    # data/precipitacion_prediction\precipitacion_2024-11-01.npy
+    path = (
+        f"data/precipitacion_prediction/precipitacion_{start_time.strftime('%Y-%m')}-01.npy"
+        if data == "precipitacion"
+        else f"data/temperature_prediction/temperatura_{start_time.strftime('%Y-%m')}-01.npy"
+    )
+    grid_temperatura = np.load(path)
+
+    gdf = gpd.read_file("data/aoi/Departamento.shp")
+    if gdf.crs != "EPSG:4326":
+        gdf = gdf.to_crs("EPSG:4326")
+    santander_gdf = gdf[gdf["DeNombre"] == "Santander"]
+    mask = np.load("data/mask.npy")
+
+    fig, _ = plt.subplots()
+    colormap = "coolwarm" if data == "temperatura" else "Blues"
+    plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap=colormap, shading="auto")
+    label = "Temperatura (°C)" if data == "temperatura" else "Precipitación (mm)"
+    plt.colorbar(label=label)
+    santander_gdf.boundary.plot(
+        ax=plt.gca(), linewidth=1, edgecolor="black", label="Límites de Santander"
+    )
+    valor = "Valor_medio" if data == "temperatura" else "Valor"
+
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    st.image(buf)
 
 
 def plot_maps(start_time, data: str):
