@@ -19,12 +19,12 @@ def main():
     st.title(APP_TITLE)
     st.divider()
 
-    st.markdown("FireNet es una plataforma de diagnóstico y visualización de...")
+    st.markdown("FireNet es una plataforma cuya principal función es contribuir a la gestión del riesgo de incendios forestales con tecnologías geoespaciales y de inteligencia artifical el cual incorpora datos abiertos meteorológicos y delitos ambientales en el departamento de Santander.")
 
     st.markdown("## **Información adicional**")
 
     st.markdown(
-        "* **Autores**: Ana Mantilla, León Suárez y Luis Rodríguez \n* **Contacto**: [Correo electrónico] \n* **Repositorio**: https://github.com/leonsuarez24/FIRENET"
+        "* **Autores**: Ana Mantilla, León Suárez y Luis Rodríguez \n* **Contacto**: ana.mantilla@correo.uis.edu.co \n* **Repositorio**: https://github.com/leonsuarez24/FIRENET"
     )
 
     st.markdown("## **Visualización de datos**")
