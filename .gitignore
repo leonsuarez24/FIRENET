@@ -1,5 +1,4 @@
 pyGIS
 scripts/__pycache__/
-tests.ipynb
 model/__pycache__/
 wandb
