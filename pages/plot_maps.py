@@ -50,7 +50,7 @@ def main():
         key="date_slider",
     )
 
-    st.write(f"Fecha seleccionada: {start_time.strftime('%Y-%m')}")
+    st.markdown(f"## Mapas de temperatura y precipitación para {start_time.strftime('%Y-%m')}")
 
     filtered_df_t = df_t[df_t["Fecha"].dt.strftime("%Y-%m") == start_time.strftime("%Y-%m")]
     filtered_df_p = df_p[df_p["Fecha"].dt.strftime("%Y-%m") == start_time.strftime("%Y-%m")]
@@ -60,9 +60,12 @@ def main():
     else:
 
         with st.container():
+            st.markdown("## Temperatura")
             col1, col2 = st.columns([1, 1])
 
             with col1:
+
+                st.markdown("### Estaciones de temperatura")
 
                 filtered_df_t["Valor_medio"] = filtered_df_t["Valor_medio"].round(2)
                 filtered_df_p["Valor"] = filtered_df_p["Valor"].round(2)
@@ -78,14 +81,16 @@ def main():
                     zoom=7,
                     color_continuous_scale="Reds",
                     mapbox_style="carto-positron",
-                    title=f"Temperatura media para {start_time.strftime('%Y-%m')} (°C)",
                 )
 
-                fig_temp.update_layout(coloraxis_colorbar_title="Temperatura media (°C)")
+                fig_temp.update_layout(
+                    coloraxis_colorbar_title="Temperatura media (°C)", height=520
+                )
 
                 st.plotly_chart(fig_temp, key="temperatura_media")
 
             with col2:
+                st.markdown("### Interpolación de temperatura")
                 inter_temp = np.load(
                     f"data/tmean_interp_final/npy/temperatura_{start_time.strftime('%Y-%m')}-01.npy"
                 )
@@ -97,11 +102,11 @@ def main():
                 fig_t.savefig(buf, format="png")
                 st.image(buf)
 
-
         with st.container():
+            st.markdown("## Precipitación")
             col3, col4 = st.columns([1, 1])
             with col3:
-
+                st.markdown("### Estaciones de precipitación")
                 fig_prep = px.scatter_mapbox(
                     filtered_df_p,
                     lat="Latitud",
@@ -113,24 +118,22 @@ def main():
                     zoom=7,
                     color_continuous_scale="Blues",
                     mapbox_style="carto-positron",
-                    title=f"Precipitación para {start_time.strftime('%Y-%m')} (mm)",
                 )
 
-                fig_prep.update_layout(coloraxis_colorbar_title="Precipitación (mm)")
+                fig_prep.update_layout(coloraxis_colorbar_title="Precipitación (mm)", height=520)
                 st.plotly_chart(fig_prep, key="precipitacion")
 
             with col4:
+                st.markdown("### Interpolación de precipitación")
                 inter_temp = np.load(
                     f"data/precipitacion_interp_final/npy/precipitacion_{start_time.strftime('%Y-%m')}-01.npy"
                 )
                 fig_p, ax = plt.subplots()
                 plt.imshow(inter_temp, cmap="Blues")
                 plt.colorbar()
-
                 buf = BytesIO()
                 fig_p.savefig(buf, format="png")
                 st.image(buf)
-
 
 
 if __name__ == "__main__":
