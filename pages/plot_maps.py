@@ -1,5 +1,5 @@
 import streamlit as st
-from scripts.utils import display_map_temp_precip
+from scripts.utils import display_map
 import pandas as pd
 import numpy as np
 import pydeck as pdk
@@ -14,18 +14,28 @@ def main():
 
     st.title(APP_TITLE)
 
-    data_temp = pd.read_excel("data/tmean.xlsx")
+    df = pd.read_excel("data/tmean.xlsx")
+    min_date = df["Fecha"].min()
+    max_date = df["Fecha"].max()
 
-    st.markdown("### Datos de temperatura")
-    st.write(data_temp)
+    start_time = st.slider(
+        "Seleccionar fecha",
+        min_value=min_date.to_pydatetime(),
+        max_value=max_date.to_pydatetime(),
+        value=datetime(2000, 1, 1),
+        format="YYYY-MM",
+        key="date_slider",
+    )
 
-    data_prep = pd.read_excel("data/precipitacion_filtrado.xlsx")
-    st.markdown("### Datos de precipitación")
-    st.write(data_prep)
+    st.write(f"Fecha seleccionada: {start_time.strftime('%Y-%m')}")
 
-    display_map_temp_precip()
+    col1, col2 = st.columns(2)
 
+    with col1:
+        display_map("data/tmean.xlsx", start_time=start_time, map_width=600, map_height=400, key="tmean")
 
+    with col2:
+        display_map("data/tmean.xlsx", start_time=start_time, map_width=600, map_height=400, key="pmean")
 
 
 if __name__ == "__main__":

@@ -36,22 +36,12 @@ def get_santander_boundaries():
         f.write(boundary_geo_json_2)
 
 
-def display_map_temp_precip():
+def display_map(file_name: str, start_time: datetime, map_width: int, map_height: int, key: str):
 
-    df = pd.read_excel("data/tmean.xlsx")
+    df = pd.read_excel(file_name)
 
     min_date = df["Fecha"].min()
     max_date = df["Fecha"].max()
-
-    start_time = st.slider(
-        "Seleccionar fecha",
-        min_value=min_date.to_pydatetime(),
-        max_value=max_date.to_pydatetime(),
-        value=datetime(2000, 1, 1),
-        format="YYYY-MM",
-    )
-
-    st.write(f"Fecha seleccionada: {start_time.strftime('%Y-%m')}")
 
     selected_period = start_time.strftime("%Y-%m")
     df["YearMonth"] = df["Fecha"].dt.to_period("M").astype(str)
@@ -64,15 +54,14 @@ def display_map_temp_precip():
         style_function=lambda feature: {"weight": 2, "color": "black"},
     ).add_to(map)
 
-    # folium.GeoJson(
-    #     "data/aoi/aoi_boundary.json",
-    #     style_function=lambda feature: {"weight": 2, "color": "black"},
-    # ).add_to(map)
+    folium.GeoJson(
+        "data/aoi/aoi_boundary.json",
+        style_function=lambda feature: {"weight": 2, "color": "black"},
+    ).add_to(map)
 
     boundaries = gpd.read_file("data/aoi/aoi_boundary.json")
     minx, miny, maxx, maxy = boundaries.total_bounds
-    
-    temp_layer = folium.FeatureGroup(name="Temperatura", show=False).add_to(map)
+
     image_data = np.load(f"data/tmean_interp_final/npy/temperatura_{selected_period}-01.npy")
     norm = mcolors.Normalize(vmin=image_data.min(), vmax=image_data.max())
     colormap = plt.cm.coolwarm
@@ -84,8 +73,7 @@ def display_map_temp_precip():
         colormap=lambda x: colormap,
         origin="lower",
         opacity=0.5,
-    ).add_to(temp_layer)
-
+    ).add_to(map)
 
     for _, row in df.iterrows():
         folium.CircleMarker(
@@ -96,7 +84,7 @@ def display_map_temp_precip():
             fill_color="black",
             fill_opacity=0.6,
             popup=f"Fecha: {row['Fecha'].strftime('%Y-%m-%d')}\nTemperatura media: {np.round(row['Valor_medio'], 2)} °C",
-        ).add_to(temp_layer)
+        ).add_to(map)
 
     fig, ax = plt.subplots(figsize=(0.8, 5))
     fig.subplots_adjust(left=0.2, right=0.8, top=0.9, bottom=0.1)
@@ -110,28 +98,10 @@ def display_map_temp_precip():
     plt.savefig(buf, format="png", transparent=True, bbox_inches="tight")
     buf.seek(0)
 
-    col1, col2 = st.columns([5, 1])
+    col1, col2 = st.columns([map_width / 1000, 0.2])
 
     with col1:
-        st_map = st_folium(map, width=700, height=400)
+        st_map = st_folium(map, width=map_width, height=map_height, key=key)
 
     with col2:
         st.image(buf, use_column_width=True)
-
-    # ----------- Precipitation layer ----------------
-    precip_layer = folium.FeatureGroup(name="Precipitation", show=False).add_to(map)
-    precip_data = np.load(f"data/precipitacion_interp_final/npy/precipitacion_{selected_period}-01.npy")
-    precip_norm = mcolors.Normalize(vmin=precip_data.min(), vmax=precip_data.max())
-    precip_colormap = plt.cm.Blues
-    precip_rgba_img = precip_colormap(precip_norm(precip_data))
-
-    ImageOverlay(
-        image=precip_rgba_img,
-        bounds=[[miny, minx], [maxy, maxx]],
-        origin="lower",
-        opacity=0.5,
-    ).add_to(precip_layer)
-
-    folium.LayerControl().add_to(map)
-
-    
