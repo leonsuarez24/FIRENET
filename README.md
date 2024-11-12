@@ -7,6 +7,14 @@
 
 FireNet es una plataforma cuya principal función es contribuir a la gestión del riesgo de incendios forestales con tecnologías geoespaciales y de inteligencia artifical el cual incorpora datos abiertos meteorológicos y delitos ambientales en el departamento de Santander.
 
+## **Datos usados**
+* [Delitos contra el medio ambiente](https://www.datos.gov.co/Seguridad-y-Defensa/DELITOS-CONTRA-EL-MEDIO-AMBIENTE/9zck-qfvc/about_data)
+* [Datos hidrometeorológicos (IDEAM) - Temperatura y precipitación](http://dhime.ideam.gov.co/atencionciudadano/)
+
+## **Metodos de Inteligencia artificial usados**
+
+* Regresión mediante splines
+* [Red neuronal ConvLSTM](https://proceedings.neurips.cc/paper_files/paper/2015/file/07563a3fe3bbe7e3ba84431ad9d055af-Paper.pdf)
 
 ## **Información adicional**
 
