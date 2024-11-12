@@ -62,9 +62,14 @@ def display_map(file_name: str, start_time: datetime, map_width: int, map_height
     boundaries = gpd.read_file("data/aoi/aoi_boundary.json")
     minx, miny, maxx, maxy = boundaries.total_bounds
 
-    image_data = np.load(f"data/tmean_interp_final/npy/temperatura_{selected_period}-01.npy")
+    path = (
+        f"data/tmean_interp_final/npy/temperatura_{selected_period}-01.npy"
+        if key == "tmean"
+        else f"data/precipitacion_interp_final/npy/precipitacion_{selected_period}-01.npy"
+    )
+    image_data = np.load(path)
     norm = mcolors.Normalize(vmin=image_data.min(), vmax=image_data.max())
-    colormap = plt.cm.coolwarm
+    colormap = plt.cm.coolwarm if key == "tmean" else plt.cm.Blues
     rgba_img = colormap(norm(image_data))
 
     img = ImageOverlay(
@@ -75,6 +80,8 @@ def display_map(file_name: str, start_time: datetime, map_width: int, map_height
         opacity=0.5,
     ).add_to(map)
 
+    valor = "Valor_medio" if key == "tmean" else "Valor"
+
     for _, row in df.iterrows():
         folium.CircleMarker(
             location=(row["Latitud"], row["Longitud"]),
@@ -83,7 +90,7 @@ def display_map(file_name: str, start_time: datetime, map_width: int, map_height
             fill=True,
             fill_color="black",
             fill_opacity=0.6,
-            popup=f"Fecha: {row['Fecha'].strftime('%Y-%m-%d')}\nTemperatura media: {np.round(row['Valor_medio'], 2)} °C",
+            popup=f"Fecha: {row['Fecha'].strftime('%Y-%m-%d')}\nTemperatura media: {np.round(row[valor], 2)} °C",
         ).add_to(map)
 
     fig, ax = plt.subplots(figsize=(0.8, 5))
@@ -92,7 +99,9 @@ def display_map(file_name: str, start_time: datetime, map_width: int, map_height
     cbar = plt.colorbar(
         plt.cm.ScalarMappable(norm=norm, cmap=colormap), cax=ax, aspect=20, shrink=0.5
     )
-    cbar.set_label("Temperatura (°C)")
+
+    label = "Temperatura media (°C)" if key == "tmean" else "Precipitación (mm)"
+    cbar.set_label(label)
 
     buf = BytesIO()
     plt.savefig(buf, format="png", transparent=True, bbox_inches="tight")

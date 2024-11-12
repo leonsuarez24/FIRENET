@@ -11,7 +11,6 @@ APP_TITLE = "FireNet:Plataforma Integrada para la Gestión de Incendios Forestal
 
 
 def main():
-
     st.title(APP_TITLE)
 
     df = pd.read_excel("data/tmean.xlsx")
@@ -35,7 +34,7 @@ def main():
         display_map("data/tmean.xlsx", start_time=start_time, map_width=600, map_height=400, key="tmean")
 
     with col2:
-        display_map("data/tmean.xlsx", start_time=start_time, map_width=600, map_height=400, key="pmean")
+        display_map("data/precipitacion_filtrado.xlsx", start_time=start_time, map_width=600, map_height=400, key="pmean")
 
 
 if __name__ == "__main__":
