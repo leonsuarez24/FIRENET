@@ -146,6 +146,30 @@ def main():
 
         st.markdown("## Visualización de delitos ambientales")
 
+        with st.container():
+            col7, col8 = st.columns([1, 1])
+
+            with col7:
+
+                fig_d_t, _ = plt.subplots()
+                plt.imshow(plt.imread("data/delitos/delitos_prec_santander.png"))
+                plt.axis("off")
+
+                buf = BytesIO()
+                fig_d_t.savefig(buf, format="png")
+                st.image(buf)
+
+            with col8:
+                    
+                fig_d_p, _ = plt.subplots()
+                plt.imshow(plt.imread("data/delitos/delitos_temp_santander.png"))
+                plt.axis("off")
+
+                buf = BytesIO()
+                fig_d_p.savefig(buf, format="png")
+                st.image(buf)
+
+
         st.markdown(
             "## Predicción de datos de temperatura y precipitación para los siguientes 10 meses"
         )
