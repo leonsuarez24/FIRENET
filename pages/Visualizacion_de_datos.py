@@ -15,6 +15,9 @@ def main():
     st.set_page_config(layout="wide")
     st.title(APP_TITLE)
 
+    st.markdown("En esta sección se presentan los datos de temperatura y precipitación de la región de Santander, Colombia. Adicionalmente, se presenta una interpolación espacial de los datos de las estaciones meteorológicas y una predicción de los datos de temperatura y precipitación mediante un modelo de aprendizaje profundo basado en redes neuronales recurrentes (RNN) y redes neuronales convolucionales (CNN) para los siguientes 10 meses.")
+    st.markdown("Adicionalmente, se presenta una visualización de los delitos ambientales en la región de Santander y como se relacionan con los datos de temperatura y precipitación.")
+
     boundaries = "data/santander_boundary.json"
 
     with open(boundaries, "r") as f:
@@ -134,6 +137,36 @@ def main():
                 buf = BytesIO()
                 fig_p.savefig(buf, format="png")
                 st.image(buf)
+
+        st.markdown("## Visualización de delitos ambientales")
+
+        st.markdown(
+            "## Predicción de datos de temperatura y precipitación para los siguientes 10 meses"
+        )
+        st.markdown(
+            "Esta predicción se basa en los datos históricos de temperatura y precipitación de la región de Santander de los últimos 24 años. Se utilizó un modelo de aprendizaje profundo basado en redes neuronales recurrentes (RNN) y redes neuronales convolucionales (CNN)."
+        )
+
+        with st.container():
+
+            st.slider(
+                "Seleccionar fecha para la predicción",
+                min_value=datetime(2024, 11, 1),
+                max_value=datetime(2025, 8, 1),
+                value=datetime(2024, 11, 1),
+                format="YYYY-MM",
+                key="date_slider_pred",
+            )
+
+            col5, col6 = st.columns([1, 1])
+
+            with col5:
+
+                st.markdown("## Predicción de temperatura")
+
+            with col6:
+
+                st.markdown("## Predicción de precipitación")
 
 
 if __name__ == "__main__":
