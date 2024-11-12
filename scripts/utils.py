@@ -13,6 +13,10 @@ import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from PIL import Image
 from io import BytesIO
+import verde as vd
+
+
+
 
 
 def get_santander_boundaries():

@@ -6,6 +6,8 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 from io import BytesIO
+import geopandas as gpd
+import verde as vd
 
 
 APP_TITLE = "FireNet"
@@ -15,8 +17,12 @@ def main():
     st.set_page_config(layout="wide")
     st.title(APP_TITLE)
 
-    st.markdown("En esta sección se presentan los datos de temperatura y precipitación de la región de Santander, Colombia. Adicionalmente, se presenta una interpolación espacial de los datos de las estaciones meteorológicas y una predicción de los datos de temperatura y precipitación mediante un modelo de aprendizaje profundo basado en redes neuronales recurrentes (RNN) y redes neuronales convolucionales (CNN) para los siguientes 10 meses.")
-    st.markdown("Adicionalmente, se presenta una visualización de los delitos ambientales en la región de Santander y como se relacionan con los datos de temperatura y precipitación.")
+    st.markdown(
+        "En esta sección se presentan los datos de temperatura y precipitación de la región de Santander, Colombia. Adicionalmente, se presenta una interpolación espacial de los datos de las estaciones meteorológicas y una predicción de los datos de temperatura y precipitación mediante un modelo de aprendizaje profundo basado en redes neuronales recurrentes (RNN) y redes neuronales convolucionales (CNN) para los siguientes 10 meses."
+    )
+    st.markdown(
+        "Adicionalmente, se presenta una visualización de los delitos ambientales en la región de Santander y como se relacionan con los datos de temperatura y precipitación."
+    )
 
     boundaries = "data/santander_boundary.json"
 
@@ -128,15 +134,22 @@ def main():
 
             with col4:
                 st.markdown("### Interpolación de precipitación")
-                inter_temp = np.load(
-                    f"data/precipitacion_interp_final/npy/precipitacion_{start_time.strftime('%Y-%m')}-01.npy"
+
+                # inter_temp = np.load(
+                #     f"data/precipitacion_interp_final/npy/precipitacion_{start_time.strftime('%Y-%m')}-01.npy"
+                # )
+                # fig_p, ax = plt.subplots()
+                # plt.imshow(inter_temp, cmap="Blues")
+                # plt.colorbar()
+                # buf = BytesIO()
+                # fig_p.savefig(buf, format="png")
+                # st.image(buf)
+
+                plot_maps(
+                    start_time,
+                    "data/precipitacion_filtrado.xlsx",
+                    "precipitacion",
                 )
-                fig_p, ax = plt.subplots()
-                plt.imshow(inter_temp, cmap="Blues")
-                plt.colorbar()
-                buf = BytesIO()
-                fig_p.savefig(buf, format="png")
-                st.image(buf)
 
         st.markdown("## Visualización de delitos ambientales")
 
@@ -168,6 +181,28 @@ def main():
 
                 st.markdown("## Predicción de precipitación")
 
+def plot_maps(start_time, excel: str, data: str):
+    region = ((-74.6), (-72.4), (5.5), (8.2)) 
+    spacing = 0.01  
+    grid = vd.grid_coordinates(region, spacing=spacing)
+    path = f"data/precipitacion_interp_final/npy/precipitacion_{start_time.strftime('%Y-%m')}-01.npy" if data == "precipitacion" else f"data/tmean_interp_final/npy/temperatura_{start_time.strftime('%Y-%m')}-01.npy"
+    grid_temperatura = np.load(path)
+    data = pd.read_excel('data/tmean.xlsx')
+    gdf = gpd.read_file('data/aoi/Departamento.shp')
+    if gdf.crs != "EPSG:4326":
+        gdf = gdf.to_crs("EPSG:4326")
+    santander_gdf = gdf[gdf['DeNombre'] == 'Santander'] 
+    mask = np.load("data/mask.npy")
+
+    fig, _ = plt.subplots()
+    plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap='coolwarm', shading='auto')
+    plt.colorbar(label='Temperatura (°C)')
+    santander_gdf.boundary.plot(ax=plt.gca(), linewidth=1, edgecolor="black", label="Límites de Santander")
+    plt.scatter(data['Longitud'], data['Latitud'], c=data['Valor_medio'], cmap='coolwarm', edgecolor='k', s=5)
+        
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    st.image(buf)
 
 if __name__ == "__main__":
     main()
