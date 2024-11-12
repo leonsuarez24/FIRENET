@@ -1,21 +1,29 @@
 import streamlit as st
-from scripts.utils import display_map
 import pandas as pd
-import numpy as np
-import pydeck as pdk
-import matplotlib.pyplot as plt
+import plotly.express as px
 from datetime import datetime
-import os
 
-APP_TITLE = "FireNet:Plataforma Integrada para la Gestión de Incendios Forestales Utilizando Tecnologías Geoespaciales e Inteligencia Artificial"
+APP_TITLE = "FireNet"
 
 
 def main():
     st.title(APP_TITLE)
 
-    df = pd.read_excel("data/tmean.xlsx")
-    min_date = df["Fecha"].min()
-    max_date = df["Fecha"].max()
+    df_t = pd.read_excel("data/tmean.xlsx")
+    df_t["Latitud"] = df_t["Latitud"].round(2)
+    df_t["Longitud"] = df_t["Longitud"].round(2)
+
+    df_p = pd.read_excel("data/precipitacion_filtrado.xlsx")
+    df_p["Latitud"] = df_p["Latitud"].round(2)
+    df_p["Longitud"] = df_p["Longitud"].round(2)
+
+    df_t.columns = df_t.columns.str.strip()
+    df_t["Latitud"] = pd.to_numeric(df_t["Latitud"], errors="coerce")
+    df_t["Longitud"] = pd.to_numeric(df_t["Longitud"], errors="coerce")
+    df_t["Fecha"] = pd.to_datetime(df_t["Fecha"])
+
+    min_date = df_t["Fecha"].min()
+    max_date = df_t["Fecha"].max()
 
     start_time = st.slider(
         "Seleccionar fecha",
@@ -28,13 +36,30 @@ def main():
 
     st.write(f"Fecha seleccionada: {start_time.strftime('%Y-%m')}")
 
-    col1, col2 = st.columns(2)
+    filtered_df = df_t[df_t["Fecha"].dt.strftime("%Y-%m") == start_time.strftime("%Y-%m")]
 
-    with col1:
-        display_map("data/tmean.xlsx", start_time=start_time, map_width=600, map_height=400, key="tmean")
+    if filtered_df.empty:
+        st.write("No data available for the selected date.")
+    else:
+        filtered_df["Valor_medio"] = filtered_df["Valor_medio"].round(2)
 
-    with col2:
-        display_map("data/precipitacion_filtrado.xlsx", start_time=start_time, map_width=600, map_height=400, key="pmean")
+        fig = px.scatter_mapbox(
+            filtered_df,
+            lat="Latitud",
+            lon="Longitud",
+            color="Valor_medio",
+            size="Valor_medio",
+            hover_name="Valor_medio",
+            size_max=15,
+            zoom=7,
+            color_continuous_scale="Viridis",
+            mapbox_style="carto-positron",
+            title=f"Temperatura media para {start_time.strftime('%Y-%m')} (°C)",
+        )
+
+        fig.update_layout(coloraxis_colorbar_title="Temperatura media (°C)")
+
+        st.plotly_chart(fig)
 
 
 if __name__ == "__main__":
