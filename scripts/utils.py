@@ -1,19 +1,5 @@
-import folium
-import folium.raster_layers
-from streamlit_folium import st_folium
-from scripts.process_temp import process_temp_data
-import folium
-import streamlit as st
-from datetime import datetime
-import pandas as pd
 import geopandas as gpd
-import numpy as np
-from folium.raster_layers import ImageOverlay
-import matplotlib.colors as mcolors
-import matplotlib.pyplot as plt
-from PIL import Image
-from io import BytesIO
-import verde as vd
+
 
 
 
