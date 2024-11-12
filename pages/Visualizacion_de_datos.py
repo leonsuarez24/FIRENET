@@ -100,16 +100,10 @@ def main():
 
             with col2:
                 st.markdown("### Interpolación de temperatura")
-                inter_temp = np.load(
-                    f"data/tmean_interp_final/npy/temperatura_{start_time.strftime('%Y-%m')}-01.npy"
+                plot_maps(
+                    start_time,
+                    "temperatura",
                 )
-                fig_t, ax = plt.subplots()
-                plt.imshow(inter_temp, cmap="coolwarm")
-                plt.colorbar()
-
-                buf = BytesIO()
-                fig_t.savefig(buf, format="png")
-                st.image(buf)
 
         with st.container():
             st.markdown("## Precipitación")
@@ -147,7 +141,6 @@ def main():
 
                 plot_maps(
                     start_time,
-                    "data/precipitacion_filtrado.xlsx",
                     "precipitacion",
                 )
 
@@ -181,13 +174,14 @@ def main():
 
                 st.markdown("## Predicción de precipitación")
 
-def plot_maps(start_time, excel: str, data: str):
+def plot_maps(start_time, data: str):
     region = ((-74.6), (-72.4), (5.5), (8.2)) 
     spacing = 0.01  
     grid = vd.grid_coordinates(region, spacing=spacing)
     path = f"data/precipitacion_interp_final/npy/precipitacion_{start_time.strftime('%Y-%m')}-01.npy" if data == "precipitacion" else f"data/tmean_interp_final/npy/temperatura_{start_time.strftime('%Y-%m')}-01.npy"
     grid_temperatura = np.load(path)
-    data = pd.read_excel('data/tmean.xlsx')
+    dataset_path = "data/precipitacion_filtrado.xlsx" if data == "precipitacion" else "data/tmean.xlsx"
+    dataset = pd.read_excel(dataset_path)
     gdf = gpd.read_file('data/aoi/Departamento.shp')
     if gdf.crs != "EPSG:4326":
         gdf = gdf.to_crs("EPSG:4326")
@@ -195,10 +189,13 @@ def plot_maps(start_time, excel: str, data: str):
     mask = np.load("data/mask.npy")
 
     fig, _ = plt.subplots()
-    plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap='coolwarm', shading='auto')
-    plt.colorbar(label='Temperatura (°C)')
+    colormap = 'coolwarm' if data == 'temperatura' else 'Blues'
+    plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap=colormap, shading='auto')
+    label = 'Temperatura (°C)' if data == 'temperatura' else 'Precipitación (mm)'
+    plt.colorbar(label=label)
     santander_gdf.boundary.plot(ax=plt.gca(), linewidth=1, edgecolor="black", label="Límites de Santander")
-    plt.scatter(data['Longitud'], data['Latitud'], c=data['Valor_medio'], cmap='coolwarm', edgecolor='k', s=5)
+    valor = 'Valor_medio' if data == 'temperatura' else 'Valor'
+    plt.scatter(dataset['Longitud'], dataset['Latitud'], c=dataset[valor], cmap=colormap, edgecolor='k', s=5)
         
     buf = BytesIO()
     fig.savefig(buf, format="png")
