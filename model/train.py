@@ -227,7 +227,7 @@ if __name__ == "__main__":
     parser.add_argument("--project_name", type=str, default="FireNet", help="project name")
     parser.add_argument("--input_seq_len", type=int, default=10, help="input sequence length")
     parser.add_argument("--output_seq_len", type=int, default=10, help="output sequence")
-    parser.add_argument("--dataset", type=str, default="temp", help="dataset name")
+    parser.add_argument("--dataset", type=str, default="prep ", help="dataset name")
     parser.add_argument("--resize", type=int, default=256, help="resize image")
 
     args = parser.parse_args()
