@@ -4,8 +4,11 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?logo=PyTorch&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF0000)
 
-
 FireNet es una plataforma cuya principal función es contribuir a la gestión del riesgo de incendios forestales con tecnologías geoespaciales y de inteligencia artifical el cual incorpora datos abiertos meteorológicos y delitos ambientales en el departamento de Santander.
+
+<p align="center">
+<img src="https://github.com/leonsuarez24/FIRENET/blob/main/figs/portada.png" width="900">
+</p>
 
 ## **Datos usados**
 * [Delitos contra el medio ambiente](https://www.datos.gov.co/Seguridad-y-Defensa/DELITOS-CONTRA-EL-MEDIO-AMBIENTE/9zck-qfvc/about_data)
