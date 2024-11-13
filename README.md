@@ -1,4 +1,4 @@
-# FireNet
+# FireNet 
 
 [![Python 3.11](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?logo=PyTorch&logoColor=white)
@@ -10,9 +10,17 @@ FireNet es una plataforma cuya principal función es contribuir a la gestión de
 <img src="https://github.com/leonsuarez24/FIRENET/blob/main/figs/portada.png" width="900">
 </p>
 
-## **Datos usados**
+## **Datos usados** 📋
 * [Delitos contra el medio ambiente](https://www.datos.gov.co/Seguridad-y-Defensa/DELITOS-CONTRA-EL-MEDIO-AMBIENTE/9zck-qfvc/about_data)
 * [Datos hidrometeorológicos (IDEAM) - Temperatura y precipitación](http://dhime.ideam.gov.co/atencionciudadano/)
+
+<p align="center">
+<img src="[https://github.com/leonsuarez24/FIRENET/blob/main/figs/Temperatura.png]" width="900">
+</p>
+
+<p align="center">
+<img src="[https://github.com/leonsuarez24/FIRENET/blob/main/figs/Precipitacion.png]" width="900">
+</p>
 
 ## **Metodos de Inteligencia artificial usados**
 
