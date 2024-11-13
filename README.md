@@ -15,11 +15,7 @@ FireNet es una plataforma cuya principal función es contribuir a la gestión de
 * [Datos hidrometeorológicos (IDEAM) - Temperatura y precipitación](http://dhime.ideam.gov.co/atencionciudadano/)
 
 <p align="center">
-<img src="https://github.com/leonsuarez24/FIRENET/blob/main/figs/Temperatura.png" width="450">
-</p>
-
-<p align="center">
-<img src="https://github.com/leonsuarez24/FIRENET/blob/main/figs/Precipitacion.png" width="450">
+<img src="https://github.com/leonsuarez24/FIRENET/blob/main/figs/DatosUsados.jpg" width="450">
 </p>
 
 ## **Metodos de Inteligencia artificial usados**
