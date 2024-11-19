@@ -16,10 +16,42 @@ def main():
         initial_sidebar_state="auto",
     )
 
+    st.image(
+        "https://raw.githubusercontent.com/leonsuarez24/FIRENET/refs/heads/main/figs/portada.png",
+        caption=None,
+        use_column_width=True,
+    )
+
     st.title(APP_TITLE)
     st.divider()
 
-    st.markdown("FireNet es una plataforma cuya principal función es contribuir a la gestión del riesgo de incendios forestales con tecnologías geoespaciales y de inteligencia artifical el cual incorpora datos abiertos meteorológicos y delitos ambientales en el departamento de Santander.")
+    st.markdown(
+        "FireNet es una plataforma cuya principal función es contribuir a la gestión del riesgo de incendios forestales con tecnologías geoespaciales y de inteligencia artifical el cual incorpora datos abiertos meteorológicos y delitos ambientales en el departamento de Santander."
+    )
+
+    st.markdown("## **Datos empleados**")
+
+    st.markdown(
+        """
+        * [Delitos contra el medio ambiente](https://www.datos.gov.co/Seguridad-y-Defensa/DELITOS-CONTRA-EL-MEDIO-AMBIENTE/9zck-qfvc/about_data)
+        * [Datos hidrometeorológicos (IDEAM) - Temperatura y precipitación](http://dhime.ideam.gov.co/atencionciudadano/)
+        """
+    )
+
+    st.image(
+        "https://raw.githubusercontent.com/leonsuarez24/FIRENET/refs/heads/main/figs/DatosUsados.jpg",
+        caption=None,
+        use_column_width=True,
+    )
+
+    st.markdown("## **Metodos de Inteligencia Artificial empleados**")
+
+    st.markdown(
+        """
+        * Regresión mediante splines
+        * [Red neuronal convolucional recurrente ConvLSTM](https://proceedings.neurips.cc/paper_files/paper/2015/file/07563a3fe3bbe7e3ba84431ad9d055af-Paper.pdf)
+        """
+    )
 
     st.markdown("## **Información adicional**")
 
