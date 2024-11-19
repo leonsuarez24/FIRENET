@@ -15,6 +15,11 @@ APP_TITLE = "FireNet"
 
 def main():
     st.set_page_config(layout="wide")
+    st.image(
+        "https://raw.githubusercontent.com/leonsuarez24/FIRENET/refs/heads/main/figs/portada.png",
+        caption=None,
+        use_column_width=True,
+    )
     st.title(APP_TITLE)
 
     st.markdown(
