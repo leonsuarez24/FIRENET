@@ -98,7 +98,7 @@ def main():
                 )
 
                 fig_temp.update_layout(
-                    coloraxis_colorbar_title="Temperatura media (°C)", height=520
+                    coloraxis_colorbar_title="Temperatura media (°C)", height=750
                 )
 
                 st.plotly_chart(fig_temp, key="temperatura_media")
@@ -128,21 +128,12 @@ def main():
                     mapbox_style="carto-positron",
                 )
 
-                fig_prep.update_layout(coloraxis_colorbar_title="Precipitación (mm)", height=520)
+                fig_prep.update_layout(coloraxis_colorbar_title="Precipitación (mm)", height=750)
                 st.plotly_chart(fig_prep, key="precipitacion")
 
             with col4:
                 st.markdown("### Interpolación de precipitación")
 
-                # inter_temp = np.load(
-                #     f"data/precipitacion_interp_final/npy/precipitacion_{start_time.strftime('%Y-%m')}-01.npy"
-                # )
-                # fig_p, ax = plt.subplots()
-                # plt.imshow(inter_temp, cmap="Blues")
-                # plt.colorbar()
-                # buf = BytesIO()
-                # fig_p.savefig(buf, format="png")
-                # st.image(buf)
 
                 plot_maps(
                     start_time,
@@ -156,23 +147,19 @@ def main():
 
             with col7:
 
-                fig_d_t, _ = plt.subplots()
-                plt.imshow(plt.imread("data/delitos/delitos_prec_santander.png"))
-                plt.axis("off")
-
-                buf = BytesIO()
-                fig_d_t.savefig(buf, format="png")
-                st.image(buf, use_column_width=True)
+                st.image(
+                    "data/delitos/delitos_prec_santander.png",
+                    caption=None,
+                    use_column_width=True,
+                )
 
             with col8:
 
-                fig_d_p, _ = plt.subplots()
-                plt.imshow(plt.imread("data/delitos/delitos_temp_santander.png"))
-                plt.axis("off")
-
-                buf = BytesIO()
-                fig_d_p.savefig(buf, format="png")
-                st.image(buf, use_column_width=True)
+                st.image(
+                    "data/delitos/delitos_temp_santander.png",
+                    caption=None,
+                    use_column_width=True,
+                )
 
             with col9:
                 delitos_df = pd.read_csv("data/delitos/delitos_santander_total.csv")
@@ -235,7 +222,7 @@ def plot_prediction(start_time, data: str):
     santander_gdf = gdf[gdf["DeNombre"] == "Santander"]
     mask = np.load("data/mask.npy")
 
-    fig, _ = plt.subplots()
+    fig, _ = plt.subplots(figsize=(10, 10))
     colormap = "coolwarm" if data == "temperatura" else "Blues"
     plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap=colormap, shading="auto")
     label = "Temperatura (°C)" if data == "temperatura" else "Precipitación (mm)"
@@ -246,8 +233,8 @@ def plot_prediction(start_time, data: str):
     valor = "Valor_medio" if data == "temperatura" else "Valor"
 
     buf = BytesIO()
-    fig.savefig(buf, format="png")
-    st.image(buf)
+    fig.savefig(buf, format="png",  bbox_inches="tight")
+    st.image(buf, caption=None, use_column_width=True)
 
 
 def plot_maps(start_time, data: str):
@@ -270,7 +257,7 @@ def plot_maps(start_time, data: str):
     santander_gdf = gdf[gdf["DeNombre"] == "Santander"]
     mask = np.load("data/mask.npy")
 
-    fig, _ = plt.subplots()
+    fig, _ = plt.subplots(figsize=(10, 10))
     colormap = "coolwarm" if data == "temperatura" else "Blues"
     plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap=colormap, shading="auto")
     label = "Temperatura (°C)" if data == "temperatura" else "Precipitación (mm)"
@@ -284,8 +271,8 @@ def plot_maps(start_time, data: str):
     )
 
     buf = BytesIO()
-    fig.savefig(buf, format="png")
-    st.image(buf)
+    fig.savefig(buf, format="png",  bbox_inches="tight")
+    st.image(buf, caption=None, use_column_width=True)
 
 
 if __name__ == "__main__":
