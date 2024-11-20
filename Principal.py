@@ -59,10 +59,18 @@ def main():
         "* **Autores**: Ana Mantilla, León Suárez y Luis Rodríguez \n* **Contacto**: ana.mantilla@correo.uis.edu.co \n* **Repositorio**: https://github.com/leonsuarez24/FIRENET"
     )
 
-    st.markdown("## **Visualización de datos**")
+    st.markdown("## **Visualización de la información**")
 
     st.markdown(
-        "Para visualizar los datos, rediríjase a la pestaña visualizacion de datos en el menú lateral."
+        "Para visualizar los datos de temperatura y precipitación, rediríjase a la pestaña visualizacion de datos en el menú lateral."
+    )
+
+    st.markdown(
+        "Para visualizar los datos sobre delitos ambientales, rediríjase a la pestaña delitos ambientales en el menú lateral."
+    )
+
+    st.markdown(
+        "Para visualizar las predicciones de temperatura y precipitación, rediríjase a la pestaña prendicción de datos en el menú lateral."
     )
 
 

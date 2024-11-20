@@ -22,11 +22,10 @@ def main():
     )
     st.title(APP_TITLE)
 
+    st.markdown("## Visualización de datos")
+
     st.markdown(
-        "En esta sección se presentan los datos de temperatura y precipitación de la región de Santander, Colombia. Adicionalmente, se presenta una interpolación espacial de los datos de las estaciones meteorológicas y una predicción de los datos de temperatura y precipitación mediante un modelo de aprendizaje profundo basado en redes neuronales recurrentes (RNN) y redes neuronales convolucionales (CNN) para los siguientes 10 meses."
-    )
-    st.markdown(
-        "Adicionalmente, se presenta una visualización de los delitos ambientales en la región de Santander y como se relacionan con los datos de temperatura y precipitación."
+        "En esta sección se presentan los datos de temperatura y precipitación de la región de Santander, Colombia. Adicionalmente, se presenta una interpolación espacial de los datos de las estaciones meteorológicas."
     )
 
     boundaries = "data/santander_boundary.json"
@@ -140,101 +139,7 @@ def main():
                     "precipitacion",
                 )
 
-        st.markdown("## Visualización de delitos ambientales")
-
-        with st.container():
-            col7, col8, col9 = st.columns([1, 1, 1])
-
-            with col7:
-
-                st.image(
-                    "data/delitos/delitos_prec_santander.png",
-                    caption=None,
-                    use_column_width=True,
-                )
-
-            with col8:
-
-                st.image(
-                    "data/delitos/delitos_temp_santander.png",
-                    caption=None,
-                    use_column_width=True,
-                )
-
-            with col9:
-                delitos_df = pd.read_csv("data/delitos/delitos_santander_total.csv")
-                st.write(delitos_df)
-
-        st.markdown(
-            "## Predicción de datos de temperatura y precipitación para los siguientes 10 meses"
-        )
-        st.markdown(
-            "Esta predicción se basa en los datos históricos de temperatura y precipitación de la región de Santander de los últimos 24 años. Se utilizó un modelo de aprendizaje profundo basado en redes neuronales recurrentes (RNN) y redes neuronales convolucionales (CNN)."
-        )
-
-        with st.container():
-
-            prediction_time = st.slider(
-                "Seleccionar fecha para la predicción",
-                min_value=datetime(2024, 11, 1),
-                max_value=datetime(2025, 8, 1),
-                value=datetime(2024, 11, 1),
-                format="YYYY-MM",
-                key="date_slider_pred",
-            )
-
-            col5, col6 = st.columns([1, 1])
-
-            with col5:
-
-                st.markdown("## Predicción de temperatura")
-                plot_prediction(
-                    prediction_time,
-                    "temperatura",
-                )
-
-            with col6:
-
-                st.markdown("## Predicción de precipitación")
-
-                plot_prediction(
-                    prediction_time,
-                    "precipitacion",
-                )
-
-
-def plot_prediction(start_time, data: str):
-    region = ((-74.6), (-72.4), (5.5), (8.2))
-    spacing = 0.01
-    grid = vd.grid_coordinates(region, spacing=spacing)
-
-    # data/precipitacion_prediction\precipitacion_2024-11-01.npy
-    path = (
-        f"data/precipitacion_prediction/precipitacion_{start_time.strftime('%Y-%m')}-01.npy"
-        if data == "precipitacion"
-        else f"data/temperature_prediction/temperatura_{start_time.strftime('%Y-%m')}-01.npy"
-    )
-    grid_temperatura = np.load(path)
-
-    gdf = gpd.read_file("data/aoi/Departamento.shp")
-    if gdf.crs != "EPSG:4326":
-        gdf = gdf.to_crs("EPSG:4326")
-    santander_gdf = gdf[gdf["DeNombre"] == "Santander"]
-    mask = np.load("data/mask.npy")
-
-    fig, _ = plt.subplots(figsize=(10, 10))
-    colormap = "coolwarm" if data == "temperatura" else "Blues"
-    plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap=colormap, shading="auto")
-    label = "Temperatura (°C)" if data == "temperatura" else "Precipitación (mm)"
-    plt.colorbar(label=label)
-    santander_gdf.boundary.plot(
-        ax=plt.gca(), linewidth=1, edgecolor="black", label="Límites de Santander"
-    )
-    valor = "Valor_medio" if data == "temperatura" else "Valor"
-
-    buf = BytesIO()
-    fig.savefig(buf, format="png",  bbox_inches="tight")
-    st.image(buf, caption=None, use_column_width=True)
+        
 
 
 def plot_maps(start_time, data: str):
