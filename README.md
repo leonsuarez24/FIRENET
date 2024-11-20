@@ -35,6 +35,6 @@ FireNet es una plataforma cuya principal función es contribuir a la gestión de
 
 **Repositorio**: https://github.com/leonsuarez24/FIRENET
 
-**Pagina web**: https://leonsuarez24-geohidro-principal-op9byl.streamlit.app/Visualizacion_de_datos 
+**Pagina web**: https://leonsuarez24-geohidro-principal-op9byl.streamlit.app
 
     
