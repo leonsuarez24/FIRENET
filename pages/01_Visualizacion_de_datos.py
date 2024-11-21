@@ -14,7 +14,10 @@ APP_TITLE = "FireNet"
 
 
 def main():
-    st.set_page_config(layout="wide")
+    st.set_page_config(layout="wide",
+                       page_icon="🔥",
+    )
+    
     st.image(
         "https://raw.githubusercontent.com/leonsuarez24/FIRENET/refs/heads/main/figs/portada.png",
         caption=None,

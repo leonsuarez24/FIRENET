@@ -14,7 +14,10 @@ APP_TITLE = "FireNet"
 
 
 def main():
-    st.set_page_config(layout="wide")
+    st.set_page_config(layout="wide",
+                       page_icon="🔥",
+    )
+    
     st.image(
         "https://raw.githubusercontent.com/leonsuarez24/FIRENET/refs/heads/main/figs/portada.png",
         caption=None,
@@ -25,7 +28,7 @@ def main():
     st.markdown("## Visualización de delitos ambientales")
 
     st.markdown(
-        "En esta sección se presenta una visualización de los delitos ambientales en la región de Santander y como se relacionan con los datos de temperatura y precipitación"
+        "En esta sección se presenta una visualización de los delitos ambientales en la región de Santander, Colombia, y como estos relacionan con los datos de temperatura y precipitación"
     )
 
     with st.container():
