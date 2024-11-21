@@ -34,7 +34,7 @@ def main():
         with col7:
 
             st.image(
-                "data/delitos/delitos_prec_santander.png",
+                "data/delitos/delitos_temp_santander.png",
                 caption=None,
                 use_column_width=True,
             )
@@ -42,7 +42,7 @@ def main():
         with col8:
 
             st.image(
-                "data/delitos/delitos_temp_santander.png",
+                "data/delitos/delitos_prec_santander.png",
                 caption=None,
                 use_column_width=True,
             )
