@@ -17,7 +17,7 @@ def main():
     st.set_page_config(layout="wide",
                        page_icon="🔥",
     )
-    
+
     st.image(
         "https://raw.githubusercontent.com/leonsuarez24/FIRENET/refs/heads/main/figs/portada.png",
         caption=None,
@@ -28,14 +28,14 @@ def main():
     st.markdown("## Visualización de delitos ambientales")
 
     st.markdown(
-        "En esta sección se presenta una visualización de los delitos ambientales en la región de Santander, Colombia, y como estos relacionan con los datos de temperatura y precipitación"
+        "En esta sección se presenta una visualización de los delitos ambientales en la región de Santander, Colombia, y como estos relacionan con los datos de temperatura y precipitación."
     )
 
     with st.container():
         col7, col8, col9 = st.columns([1, 1, 1])
 
         with col7:
-
+            st.markdown("## Temperatura")
             st.image(
                 "data/delitos/delitos_temp_santander.png",
                 caption=None,
@@ -43,7 +43,7 @@ def main():
             )
 
         with col8:
-
+            st.markdown("## Precipitación")
             st.image(
                 "data/delitos/delitos_prec_santander.png",
                 caption=None,
