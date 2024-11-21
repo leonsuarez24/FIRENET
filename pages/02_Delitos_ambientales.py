@@ -10,11 +10,12 @@ import geopandas as gpd
 import verde as vd
 
 
-APP_TITLE = "FireNet"
+APP_TITLE = "Delitos ambientales"
 
 
 def main():
     st.set_page_config(layout="wide",
+                       page_title=APP_TITLE,
                        page_icon="🔥",
     )
 
