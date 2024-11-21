@@ -84,7 +84,10 @@ def plot_prediction(start_time, data: str):
 
     fig, _ = plt.subplots(figsize=(10, 10))
     colormap = "coolwarm" if data == "temperatura" else "Blues"
-    plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap=colormap, shading="auto")
+    if data == "temperatura":
+        plt.pcolormesh(grid[0], grid[1], grid_temperatura * mask, cmap=colormap, shading="auto")
+    else:
+        plt.pcolormesh(grid[0], grid[1], (grid_temperatura *10)* mask, cmap=colormap, shading="auto")
     label = "Temperatura (°C)" if data == "temperatura" else "Precipitación (mm)"
     plt.colorbar(label=label)
     santander_gdf.boundary.plot(
