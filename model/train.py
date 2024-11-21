@@ -45,7 +45,7 @@ def main(args):
     dataset_path = (
         "data/tmean_interp_final/npy"
         if args.dataset == "temp"
-        else "data/precipitation_interp_final/npy"
+        else "data/precipitacion_interp_final/npy"
     )
 
     dataset = TempDataset(
@@ -54,7 +54,11 @@ def main(args):
         input_seq_len=args.input_seq_len,
         output_seq_len=args.output_seq_len,
         rezise=(args.resize, args.resize),
+        folder_path=dataset_path,
     )
+
+    print("Loading dataset ...", dataset_path)
+
     train_loader, val_loader, test_loader = dataset.get_loaders()
 
     encoder = Encoder(convlstm_encoder_params[0], convlstm_encoder_params[1]).to(device)
@@ -228,7 +232,7 @@ if __name__ == "__main__":
     parser.add_argument("--input_seq_len", type=int, default=10, help="input sequence length")
     parser.add_argument("--output_seq_len", type=int, default=10, help="output sequence")
     parser.add_argument("--dataset", type=str, default="prep ", help="dataset name")
-    parser.add_argument("--resize", type=int, default=256, help="resize image")
+    parser.add_argument("--resize", type=int, default=64, help="resize image")
 
     args = parser.parse_args()
     main(args)
