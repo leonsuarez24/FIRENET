@@ -18,20 +18,10 @@ FireNet es una plataforma cuya principal función es contribuir a la gestión de
 <img src="https://github.com/leonsuarez24/FIRENET/blob/main/figs/DatosUsados.jpg" width="900">
 </p>
 
-## **Limpieza de datos** 📋
-
-El script "process_data_main.py" tiene las técnicas de filtrado para los datos de anomalías que no corresponden con eventos de temperatura y/o precipitación, y el análisis estadístico de ambos conjuntos de datos. Para ejecutar el archivo debes tener la carpeta "script" que se encuentra en el repositorio.
-
-## **Interpolación de datos** 📋
-
-El notebook "interpolate.ipynb" tiene el procedimiento para interpolar los datos de temperatura y precipitación media mensual de cada estación en todo el departamento de Santander. Este archivo se encuentra en la carpeta "notebooks".
-
 ## **Metodos de Inteligencia artificial usados**
 
 * Regresión mediante splines
 * [Red neuronal ConvLSTM](https://proceedings.neurips.cc/paper_files/paper/2015/file/07563a3fe3bbe7e3ba84431ad9d055af-Paper.pdf)
-
-Los pesos de la red neuronal entrenada se encuentran en la ruta "model/weights" tanto para la precipitación como temperatura. Estos modelos se usaron para predecir los mapas mensuales desde noviembre-2024 hasta octubre-2025. Los resultados se guardaron como matrices numpy en la carpeta "data". 
 
 ## **Información adicional**
 
